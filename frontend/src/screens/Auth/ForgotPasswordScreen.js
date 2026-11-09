@@ -10,6 +10,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -91,9 +92,11 @@ export default function ForgotPasswordScreen({ navigation }) {
             >
               <Ionicons name="chevron-back" size={22} color="#111" />
             </TouchableOpacity>
-            <View style={styles.logoCircle}>
-              <Ionicons name="key-outline" size={38} color="#fff" />
-            </View>
+            <Image
+              source={require("../../../assets/icon.png")}
+              style={styles.appLogo}
+              resizeMode="contain"
+            />
             <Text style={styles.appName}>HostelEase</Text>
             <Text style={styles.welcomeText}>Reset Password 🔐</Text>
             <Text style={styles.subtitleText}>
@@ -233,19 +236,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     position: "relative",
   },
-  logoCircle: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: "#8fb3ff",
-    justifyContent: "center",
-    alignItems: "center",
+  appLogo: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
     marginBottom: 12,
-    shadowColor: "#8fb3ff",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 5,
   },
   appName: {
     fontSize: 20,

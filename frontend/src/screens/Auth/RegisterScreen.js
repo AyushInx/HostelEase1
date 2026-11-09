@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Dimensions,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
@@ -127,9 +128,11 @@ export default function RegisterScreen({ navigation }) {
         >
           {/* Header / Logo */}
           <View style={styles.header}>
-            <View style={styles.logoCircle}>
-              <Ionicons name="person-add" size={40} color="#fff" />
-            </View>
+            <Image
+              source={require("../../../assets/icon.png")}
+              style={styles.appLogo}
+              resizeMode="contain"
+            />
             <Text style={styles.appName}>HostelEase</Text>
             <Text style={styles.welcomeText}>Join Us! 🚀</Text>
             <Text style={styles.subtitleText}>Create your account to get started</Text>
@@ -331,19 +334,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  logoCircle: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: "#8fb3ff",
-    justifyContent: "center",
-    alignItems: "center",
+  appLogo: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
     marginBottom: 12,
-    shadowColor: "#8fb3ff",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.15,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 5,
   },
   appName: {
     fontSize: 22,

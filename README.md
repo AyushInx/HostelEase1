@@ -1,214 +1,254 @@
-# 🏨 HostelEase – Smart Hostel Management App
+<div align="center">
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge)
-![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey.svg?style=for-the-badge&logo=apple)
-![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)
-![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)
+<img src="./frontend/assets/icon.png" width="120" height="120" alt="HostelEase Logo" style="border-radius: 28px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);" />
 
-> **Your ultimate sidekick for stress-free hostel adventures!**
+# 🏨 HostelEase
+### Next-Generation Smart Hostel Management System
 
-![Banner](./frontend/assets/hostelhub_banner.png)
+[![Live Web App](https://img.shields.io/badge/Live%20Web%20App-hostelease1--web.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://hostelease1-web.vercel.app/)
+[![API Status](https://img.shields.io/badge/Production%20API-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://hostelease1-production.up.railway.app/health)
+[![Expo SDK 54](https://img.shields.io/badge/Expo%20SDK-54.0-blue?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev/)
+[![React Native](https://img.shields.io/badge/React%20Native-0.81.5-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactnative.dev/)
+[![Node.js](https://img.shields.io/badge/Backend-Node%20%7C%20Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/Database-Supabase%20Postgres-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-## 📖 Table of Contents
-- [About the Project](#-about-the-project)
-- [Problem & Solution](#-problem--solution)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Demo](#-watch-live-demo)
-- [Screenshots](#-screenshots)
-- [Environment Variables](#-environment-configuration)
-- [Installation](#-installation--quick-start)
-- [Folder Structure](#-folder-structure)
-- [Documentation & Policy](#-documentation--policy)
-- [Roadmap](#-future-scope--roadmap)
-- [Author](#-author)
+<br/>
 
----
+**A unified, cross-platform ecosystem designed to digitize university hostel administration.**  
+Available as an **Android APK**, **iOS app**, and a responsive **Live Mobile Web Portal** sharing the exact same real-time database.
 
-## 🚀 About the Project
+<br/>
 
-**HostelEase** is a mobile application designed to digitize hostel administration. It bridges the communication gap between students and wardens by enabling transparency, speed, and better management of daily hostel activities.
+👉 **[Launch Live Web Portal (Login & Register)](https://hostelease1-web.vercel.app/)** 👈
 
-From applying for leaves to checking the mess menu or filing a complaint, **HostelEase** brings everything to your fingertips.
+</div>
 
 ---
 
-## 🧩 Problem & Solution
-
-### 🔴 The Problem
-Traditional hostel management relies on manual registers, paper forms, and verbal communication. This leads to:
-*   Slow approval processes for leaves.
-*   Lack of transparency in complaints.
-*   Inefficient communication of notices.
-*   No centralized feedback system for food quality.
-
-### 🟢 The Solution
-**HostelEase** digitizes these processes:
-*   **Instant Leaves**: QR-based digital passes approved in seconds.
-*   **Trackable Complaints**: Status updates ensure accountability.
-*   **Digital Notices**: Push notifications for instant reach.
-*   **Data-Driven Mess**: Feedback analytics to improve food quality.
+## 📑 Table of Contents
+- [✨ Key Features](#-key-features)
+- [🏢 Hostel & Location Hierarchy](#-hostel--location-hierarchy)
+- [🛠️ Complaint Resolution Lifecycle](#️-complaint-resolution-lifecycle)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🔑 Live Demo Credentials](#-live-demo-credentials)
+- [📡 API Documentation](#-api-documentation)
+- [💻 Tech Stack](#-tech-stack)
+- [🚀 Local Setup & Installation](#-local-setup--installation)
+- [📦 Building the Android APK](#-building-the-android-apk)
+- [🌐 Web Deployment](#-web-deployment)
 
 ---
 
-## 🌟 Key Features
+## ✨ Key Features
 
-*   🏙️ **Role-based Dashboard**: Distinct interfaces for **Student** (Resident) and **Warden** (Admin).
-*   🎟️ **Digital Leave Pass**: Apply online and track warden approvals in seconds *(QR-based pass scanner planned in roadmap)*.
-*   🍛 **Smart Mess Menu**: View daily meals and provide 1-tap feedback with analytics.
-*   🛠️ **Complaint Tracking**: Upload images of issues, provide descriptions, and track resolution status.
-*   🛒 **Hostel Marketplace**: Buy and sell books, gadgets, and essentials within the hostel community.
-*   📊 **Polls & Voting**: participate in democratic decision-making for hostel events/rules.
-*   📢 **Real-time Notifications**: Never miss an important notice or announcement.
-*   🔍 **Lost & Found Board**: Post and find lost items easily.
+### 👨‍🎓 Student Experience
+- **Smart Registration**: Chip-based hostel selector with conditional block selection and strict numeric room validation (`/^\d{1,4}$/`).
+- **Complaint Management**: Auto-fills hostel/block/room from user profile, category chips (*Electrical, Civil, Mess, Internet / Wi-Fi, Other*), and live 4-step progress tracker.
+- **7-Day Mess Menu**: Interactive Monday-to-Sunday weekly meal schedule (Breakfast, Lunch, Snacks, Dinner) with 1-tap rating and feedback.
+- **Digital Leave Passes**: Submit instant out-pass and overnight leave requests with live approval tracking.
+- **Democratic Polls**: Vote on hostel decisions, food options, and campus events with instant percentage tallies.
+- **Campus Marketplace & Lost/Found**: Buy/sell textbooks, electronics, and report missing items securely.
+- **Profile Management**: Update hostel, block, and room number on the fly via `PUT /api/users/me`.
 
----
-
-## 🛠 Tech Stack
-
-![React Native](https://img.shields.io/badge/react_native-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![Expo](https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-
+### 🛡️ Warden & Admin Experience
+- **Role-Based Control**: Dedicated administrative dashboard guarded by server-side role validation.
+- **Complaint Action Center**: Filter complaints by hostel and category, inspect room details, and advance status:
+  $$\text{Submitted} \longrightarrow \text{Accepted} \longrightarrow \text{Being Fixed} \longrightarrow \text{Resolved}$$
+- **Leave Request Approvals**: 1-click Approve or Reject with instant status reflection on student devices.
+- **Mess Menu Master**: Modify daily meal items, timings, and monitor student quality ratings.
+- **Poll Creation & Management**: Publish campus-wide or hostel-specific polls with customizable options.
 
 ---
 
-## 🎥 Watch Live Demo
+## 🏢 Hostel & Location Hierarchy
 
-👉 [https://youtu.be/3d4AHw-Zgcc](https://youtu.be/3d4AHw-Zgcc)
+All hostels, blocks, and floor configurations are centrally governed by the single source of truth:
 
-<p align="center">
-  <img src="./frontend/assets/screenshots/hostelhub_demo.gif" height="500"/>
-</p>
+| Hostel Name | Blocks | Floors | Capacity / Rooms |
+|:---|:---:|:---:|:---|
+| **CVR** | *None* | Floors 0–7 | 28 rooms per floor |
+| **Aryabhatta** | Blocks A, B, C, D | Floors 0–7 | 32 rooms per floor |
+| **Kalam** | Blocks A, B, C, D | Floors 0–7 | 37 rooms per floor |
+| **Asima** | Blocks A, B, C, D | Floors 0–4 (5 floors) | Standard residential blocks |
 
-
----
-
-## 📱 Screenshots
-
-| Login Screen | Student Dashboard | Dashboard |
-|:---:|:---:|:---:|
-| ![Login](./frontend/assets/screenshots/login.jpeg) | ![Student Dashboard](./frontend/assets/screenshots/dashboard1.jpeg) | ![Dashboard](./frontend/assets/screenshots/dashboard2.jpeg) |
-
-| Mess Menu | Complaints | Marketplace |
-|:---:|:---:|:---:|
-| ![Menu](./frontend/assets/screenshots/mess.jpeg) | ![Complaints](./frontend/assets/screenshots/complaints.jpeg) | ![Market](./frontend/assets/screenshots/market.jpeg) |
+> [!NOTE]
+> **Block Validation Rule**: Selecting **Aryabhatta**, **Kalam**, or **Asima** strictly mandates block selection (`A`–`D`). Selecting **CVR** automatically clears and hides the block requirement. Room numbers are optional and restricted to up to 4 digits (`0`–`9999`).
 
 ---
 
-## 🔑 Environment Configuration
+## 🛠️ Complaint Resolution Lifecycle
 
-Copy the example environment files (`.env.example`) to `.env` or `.env.local` in both `backend` and `frontend` directories. (`.env.local` takes priority if both are present).
+Every student complaint is tracked across a transparent 4-stage pipeline with the custom `ComplaintTracker` UI component:
 
-### Backend (`/backend/.env` or `/backend/.env.local`)
+```mermaid
+flowchart LR
+    A["🟡 1. Submitted<br/>(PENDING)"] --> B["🔵 2. Accepted<br/>(ACKNOWLEDGED)"]
+    B --> C["🟠 3. Being Fixed<br/>(IN_PROGRESS)"]
+    C --> D["🟢 4. Resolved<br/>(RESOLVED)"]
+```
 
-| Variable | Description | Required | Reference Value |
-|----------|-------------|:--------:|-----------------|
-| `PORT` | Server Port | No | `5000` |
-| `DATABASE_URL` | PostgreSQL Connection String | **Yes** | `postgresql://user:pass@host:5432/db?schema=public` |
-| `HOSTELEASE_SECRET_JWT` | Secret Key for JWT | **Yes** | `change_this_to_a_long_random_string` |
-
-
-### Frontend (`/frontend/.env` or `/frontend/.env.local`)
-
-| Variable | Description | Value |
-|----------|-------------|-------|
-| `EXPO_PUBLIC_API_URL` | Backend API URL | `http://<YOUR_LOCAL_IP>:5000/api` |
-
-> [!IMPORTANT]
-> **Note on Mobile API URL**: Always use your PC's local network IP address (e.g. `http://192.168.1.5:5000/api`) instead of `localhost` so physical devices or emulators on your network can connect to the backend server.
+- **Submitted (`PENDING`)**: Complaint filed by student with photo and description.
+- **Accepted (`ACKNOWLEDGED`)**: Warden acknowledges issue and dispatches maintenance team.
+- **Being Fixed (`IN_PROGRESS`)**: Technicians actively working on site.
+- **Resolved (`RESOLVED`)**: Work completed and verified.
 
 ---
 
-## ⚡ Installation & Quick Start
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    subgraph Clients["Clients (Shared Experience)"]
+        APK["📱 Android APK<br/>(React Native / Expo)"]
+        WEB["🌐 Mobile Web Portal<br/>(Vercel SPA / PWA)"]
+    end
+
+    subgraph Cloud["Production Infrastructure"]
+        GW["🚀 Express.js REST API<br/>(Railway Cloud)"]
+        DB["🐘 PostgreSQL Database<br/>(Supabase Cloud)"]
+    end
+
+    APK -->|"HTTPS (20s timeout, JSON)"| GW
+    WEB -->|"CORS * with Credentials"| GW
+    GW -->|"Prisma ORM (Connection Pool)"| DB
+```
+
+---
+
+## 🔑 Live Demo Credentials
+
+You can test the live application directly on **[https://hostelease1-web.vercel.app/](https://hostelease1-web.vercel.app/)** or via the Android APK using these pre-configured accounts:
+
+### 👑 Admin / Warden Access
+- **Email**: `admin_launch@hostelease.com` *(or `preinfinty.ak@gmail.com`)*
+- **Password**: `Password@123`
+- **Privileges**: Manage complaints (Accept/Progress/Resolve), Approve leaves, Update mess menus, Create polls.
+
+### 🎓 Student Access
+- **Email**: Any student account or register a new account on the registration screen.
+- **Example**: `student@hostelease.com` / `Password@123`
+- **Privileges**: Apply for complaints, view 4-stage tracker, submit leaves, vote on polls, view mess menu.
+
+---
+
+## 📡 API Documentation
+
+Base URL: `https://hostelease1-production.up.railway.app/api`
+
+### Authentication & Profile
+| Method | Endpoint | Access | Description |
+|:---|:---|:---:|:---|
+| `POST` | `/auth/register` | Public | Register student (Hostel, Block, Room validation) |
+| `POST` | `/auth/login` | Public | Authenticate user & receive JWT |
+| `POST` | `/auth/reset-password` | Public | Rate-limited password reset (5 req/hr per IP) |
+| `GET` | `/users/me` | Auth | Get current authenticated user profile |
+| `PUT` | `/users/me` | Auth | Update user profile (Hostel, Block, Room) |
+| `GET` | `/users/stats` | Auth | Get live student/warden dashboard statistics |
+
+### Complaints & Locations
+| Method | Endpoint | Access | Description |
+|:---|:---|:---:|:---|
+| `GET` | `/hostels` | Public | Get hostels, block rules, and complaint categories |
+| `POST` | `/complaints` | Auth | Create a new complaint with location & category |
+| `GET` | `/complaints/my` | Auth | Fetch student's filed complaints with tracking state |
+| `GET` | `/complaints` | Warden | Fetch all hostel complaints with category & status filters |
+| `PATCH` | `/complaints/:id/status`| Warden | Update status: `ACKNOWLEDGED`, `IN_PROGRESS`, `RESOLVED` |
+
+### Mess, Leaves & Polls
+| Method | Endpoint | Access | Description |
+|:---|:---|:---:|:---|
+| `GET` | `/mess/menu` | Auth | Fetch full 7-day Monday–Sunday mess meal schedule |
+| `POST` | `/mess/feedback` | Auth | Submit meal quality rating & feedback |
+| `POST` | `/leave/apply` | Student | Submit digital leave application |
+| `GET` | `/leave/my` | Student | View leave request history and status |
+| `PATCH` | `/leave/:id/status` | Warden | Approve or Reject leave requests |
+| `GET` | `/polls` | Auth | Fetch active polls with user vote status |
+| `POST` | `/polls/:id/vote` | Auth | Cast vote on a specific poll option |
+
+---
+
+## 💻 Tech Stack
+
+| Layer | Technologies |
+|:---|:---|
+| **Mobile & Web Frontend** | React Native, Expo SDK 54, React Native Web, React Navigation v7 |
+| **Styling & Assets** | Expo Linear Gradient, React Native Vector Icons, Custom Vector Assets |
+| **Backend Framework** | Node.js, Express.js (ES Modules), CORS, Helmet |
+| **Database & ORM** | PostgreSQL (Supabase Cloud), Prisma ORM |
+| **Authentication** | JSON Web Tokens (JWT), bcrypt password hashing, IP rate limiting |
+| **Hosting & CI/CD** | Vercel (Web Frontend), Railway (Backend Server), EAS (Android APK) |
+
+---
+
+## 🚀 Local Setup & Installation
+
+### Prerequisites
+- Node.js 18+ installed
+- Git installed
+- PostgreSQL database (or free Supabase project)
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<MY_USERNAME>/HostelEase.git
-cd HostelEase
+git clone https://github.com/AyushInx/HostelEase1.git
+cd HostelEase1
 ```
 
 ### 2. Backend Setup
 ```bash
 cd backend
 npm install
-cp .env.example .env    # Configure your DATABASE_URL & HOSTELEASE_SECRET_JWT
+cp .env.example .env
+# Ensure DATABASE_URL and HOSTELEASE_SECRET_JWT are set
 npx prisma generate
-npx prisma migrate dev
-npm run dev             # Or 'npm start' for production mode
+npx prisma db push
+npm run dev
 ```
 
 ### 3. Frontend Setup
 ```bash
-cd frontend
+cd ../frontend
 npm install
-cp .env.example .env    # Configure EXPO_PUBLIC_API_URL with your local LAN IP
+# Run locally on Web
+npm run web
+
+# Or start Expo development server for Mobile
 npx expo start
 ```
 
 ---
 
-## 📂 Folder Structure
+## 📦 Building the Android APK
 
-```
-HostelEase/
-├── backend/
-│   ├── prisma/             # Database Schema
-│   ├── src/
-│   │   ├── config/         # Configs (Env, DB)
-│   │   ├── controllers/    # Route Logic
-│   │   ├── middlewares/    # Auth & Error middlewares
-│   │   ├── routes/         # API Routes
-│   │   ├── services/       # Business Logic
-│   │   └── app.js          # Entry Point
-│   └── package.json
-│
-├── frontend/
-│   ├── assets/             # Images & Fonts
-│   ├── src/
-│   │   ├── api/            # API Client
-│   │   ├── components/     # Reusable Components
-│   │   ├── context/        # Auth & State Context
-│   │   ├── navigation/     # Navigators (Stacks/Tabs)
-│   │   ├── screens/        # App Screens
-│   │   └── utils/          # Helpers
-│   └── package.json
-│
-└── README.md
-```
+The project is pre-configured with Expo Application Services (EAS Build).
+
+1. Install EAS CLI:
+   ```bash
+   npm install -g eas-cli
+   ```
+2. Navigate to `frontend` and start the cloud build:
+   ```bash
+   cd frontend
+   npx eas-cli build --platform android --profile preview
+   ```
+3. Once completed, EAS provides a direct download link and QR code to install the `.apk` on any Android device.
 
 ---
 
-## 📜 Documentation & Policy
+## 🌐 Web Deployment
 
-Please read the following documents to understand the development standards and project policies:
+The web frontend is deployed to Vercel with automatic continuous deployment on push to `main`:
 
-*   [**Contributing Guidelines**](CONTRIBUTING.md) 🤝
-*   [**Code of Conduct**](CODE_OF_CONDUCT.md) 👮
-*   [**Security Policy**](SECURITY.md) 🛡️
-*   [**License**](LICENSE) ⚖️
-
----
-
-## 🔮 Future Scope / Roadmap
-
-*   [ ] **Payment Gateway**: Integration for mess fees and rent payments.
-*   [ ] **AI Analytics**: Predictive analysis for mess food wastage and demand.
-*   [ ] **Biometric Auth**: Fingerprint/FaceID login support.
-*   [ ] **Multi-Hostel Support**: Scalable architecture for university-wide deployment.
-*   [ ] **Offline Mode**: Local caching for viewing recent notices without internet.
+- **Project Root**: `frontend`
+- **Build Command**: `npm run build:web`
+- **Output Directory**: `dist`
+- **Environment Variable**: `EXPO_PUBLIC_API_URL=https://hostelease1-production.up.railway.app/api`
 
 ---
 
-## 👤 Author
+<div align="center">
 
-**Krit Garg**  
+Made with ❤️ for students and administrators worldwide.  
+**[Open HostelEase Web App](https://hostelease1-web.vercel.app/)**
 
-
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/kritgarg)
-[![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/krit--garg/)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:kritg0160@gmail.com)
+</div>
