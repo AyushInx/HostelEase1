@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
@@ -99,8 +101,10 @@ export default function ApplyComplaintScreen({ navigation }) {
     }
   };
 
+  const ScrollWrapper = Platform.OS === "web" ? ScrollView : KeyboardAwareScrollView;
+
   return (
-    <KeyboardAwareScrollView
+    <ScrollWrapper
       style={{ flex: 1 }}
       contentContainerStyle={styles.container}
       keyboardShouldPersistTaps="handled"
@@ -254,7 +258,7 @@ export default function ApplyComplaintScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-    </KeyboardAwareScrollView>
+    </ScrollWrapper>
   );
 }
 

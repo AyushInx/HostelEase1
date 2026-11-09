@@ -195,15 +195,13 @@ export default function StudentHomeScreen({ navigation }) {
 
         <Text style={styles.title}>Quick actions for students</Text>
 
-        <FlatList
-          data={tilesData}
-          renderItem={renderTile}
-          keyExtractor={item => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.grid}
-          contentContainerStyle={styles.gridContainer}
-          scrollEnabled={false}
-        />
+        <View style={styles.gridWrap}>
+          {tilesData.map((item) => (
+            <React.Fragment key={item.id}>
+              {renderTile({ item })}
+            </React.Fragment>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -265,6 +263,12 @@ const styles = StyleSheet.create({
   },
   grid: { 
     justifyContent: "space-between"
+  },
+  gridWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingBottom: 20,
   },
   gridContainer: {
     paddingBottom: 20

@@ -47,8 +47,10 @@ export default function ApplyLeaveScreen({ navigation }) {
     }
   };
 
+  const ScrollWrapper = Platform.OS === "web" ? ScrollView : KeyboardAwareScrollView;
+
   return (
-    <KeyboardAwareScrollView 
+    <ScrollWrapper 
       style={{ flex: 1 }}
       contentContainerStyle={styles.container} 
       keyboardShouldPersistTaps="handled"
@@ -118,7 +120,7 @@ export default function ApplyLeaveScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </View>
-    </KeyboardAwareScrollView>
+    </ScrollWrapper>
   );
 }
 

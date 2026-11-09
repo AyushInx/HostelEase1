@@ -301,17 +301,13 @@ export default function PollsScreen({ navigation }) {
             </View>
           )}
           {!loading && filteredPolls.length > 0 && (
-            <FlatList
-              data={filteredPolls}
-              renderItem={renderPoll}
-              keyExtractor={keyExtractor}
-              scrollEnabled={false}
-              removeClippedSubviews={true}
-              maxToRenderPerBatch={5}
-              updateCellsBatchingPeriod={50}
-              initialNumToRender={5}
-              windowSize={10}
-            />
+            <View>
+              {filteredPolls.map((item, index) => (
+                <React.Fragment key={keyExtractor(item, index)}>
+                  {renderPoll({ item, index })}
+                </React.Fragment>
+              ))}
+            </View>
           )}
         </View>
       </ScrollView>
