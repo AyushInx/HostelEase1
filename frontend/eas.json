@@ -11,9 +11,16 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://hostelease1-production.up.railway.app/api"
       }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://hostelease1-production.up.railway.app/api"
+      }
+    }
   },
   "submit": {
     "production": {}
