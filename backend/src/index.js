@@ -60,7 +60,7 @@ app.get("/api/admin/stats", auth, role("ADMIN"), async (req, res, next) => {
 app.use(errorHandler);
 
 
-app.listen(ENV.PORT, () => {
+app.listen(ENV.PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${ENV.PORT}`);
 });
 export { prisma };
