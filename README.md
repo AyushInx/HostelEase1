@@ -121,8 +121,8 @@ graph TD
 You can test the live application directly on **[https://hostelease1-web.vercel.app/](https://hostelease1-web.vercel.app/)** or via the Android APK using these pre-configured accounts:
 
 ### 👑 Admin / Warden Access
-- **Email**: `admin_launch@hostelease.com` *(or `preinfinty.ak@gmail.com`)*
-- **Password**: `Password@123`
+- *
+- **Password**: `
 - **Privileges**: Manage complaints (Accept/Progress/Resolve), Approve leaves, Update mess menus, Create polls.
 
 ### 🎓 Student Access
