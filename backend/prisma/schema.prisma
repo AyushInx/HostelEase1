@@ -25,6 +25,7 @@ enum LeaveStatus {
 
 enum ComplaintStatus {
   PENDING
+  ACKNOWLEDGED
   IN_PROGRESS
   RESOLVED
 }
@@ -49,6 +50,8 @@ model User {
   email     String    @unique
   password  String
   role      Role      @default(STUDENT)
+  hostel    String?
+  block     String?
   roomNumber String?
   createdAt DateTime  @default(now())
 
@@ -89,8 +92,13 @@ model Complaint {
   userId      Int
   title       String
   description String
+  category    String          @default("OTHER")
+  hostel      String?
+  block       String?
+  roomNumber  String?
   status      ComplaintStatus @default(PENDING)
   createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now()) @updatedAt
 
   user        User            @relation(fields: [userId], references: [id])
 }

@@ -1,5 +1,6 @@
 import { prisma } from "../../config/db.js";
 import bcrypt from "bcrypt";
+import { validateLocation, validateRoomNumber } from "../../constants/hostels.js";
 
 export const listUsers = async ({ role, search, page = 1, limit = 20 }) => {
   const where = {
@@ -19,30 +20,91 @@ export const listUsers = async ({ role, search, page = 1, limit = 20 }) => {
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
-      select: { id: true, name: true, email: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        hostel: true,
+        block: true,
+        roomNumber: true,
+        createdAt: true,
+      },
     }),
     prisma.user.count({ where }),
   ]);
   return { items, total, page, limit };
 };
 
-export const updateMe = async ({ userId, name, oldPassword, newPassword }) => {
+export const updateMe = async ({
+  userId,
+  name,
+  hostel,
+  block,
+  roomNumber,
+  oldPassword,
+  newPassword,
+}) => {
   const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
-  if (!user) throw new Error("User not found");
+  if (!user) {
+    const e = new Error("User not found");
+    e.status = 404;
+    throw e;
+  }
 
   const data = {};
 
-  if (name && name !== user.name) {
-    data.name = name;
+  if (name !== undefined) {
+    const cleanName = String(name).trim();
+    if (!cleanName) {
+      const e = new Error("Name cannot be empty");
+      e.status = 400;
+      throw e;
+    }
+    if (cleanName !== user.name) {
+      data.name = cleanName;
+    }
+  }
+
+  // Location validation if hostel is provided
+  if (hostel !== undefined) {
+    const locResult = validateLocation(hostel, block);
+    if (!locResult.valid) {
+      const e = new Error(locResult.message);
+      e.status = 400;
+      throw e;
+    }
+    data.hostel = locResult.hostel;
+    data.block = locResult.block;
+  }
+
+  // Room number validation if roomNumber is provided
+  if (roomNumber !== undefined) {
+    const roomResult = validateRoomNumber(roomNumber);
+    if (!roomResult.valid) {
+      const e = new Error(roomResult.message);
+      e.status = 400;
+      throw e;
+    }
+    data.roomNumber = roomResult.roomNumber;
   }
 
   if (newPassword) {
     if (!oldPassword) {
-      throw new Error("Old password is required");
+      const e = new Error("Old password is required");
+      e.status = 400;
+      throw e;
+    }
+    if (newPassword.length < 6) {
+      const e = new Error("New password must be at least 6 characters");
+      e.status = 400;
+      throw e;
     }
     const match = await bcrypt.compare(oldPassword, user.password);
     if (!match) {
-      throw new Error("Old password is incorrect");
+      const e = new Error("Old password is incorrect");
+      e.status = 400;
+      throw e;
     }
     const hashed = await bcrypt.hash(newPassword, 10);
     data.password = hashed;
@@ -55,6 +117,8 @@ export const updateMe = async ({ userId, name, oldPassword, newPassword }) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      hostel: user.hostel,
+      block: user.block,
       roomNumber: user.roomNumber,
       createdAt: user.createdAt,
     };
@@ -63,7 +127,16 @@ export const updateMe = async ({ userId, name, oldPassword, newPassword }) => {
   const updated = await prisma.user.update({
     where: { id: Number(userId) },
     data,
-    select: { id: true, name: true, email: true, role: true, roomNumber: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      hostel: true,
+      block: true,
+      roomNumber: true,
+      createdAt: true,
+    },
   });
 
   return updated;

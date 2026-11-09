@@ -7,6 +7,7 @@ const router = Router();
 
 router.get("/", auth, role("WARDEN", "ADMIN"), listUsers);
 router.get("/stats", auth, role("STUDENT"), getStudentStats);
+router.put("/me", auth, updateMe);
 router.patch("/me", auth, updateMe);
 
 export default router;

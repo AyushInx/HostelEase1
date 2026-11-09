@@ -10,6 +10,7 @@ import marketplaceRoutes from "./modules/marketplace/marketplace.routes.js";
 import pollsRoutes from "./modules/polls/polls.routes.js";
 import lostfoundRoutes from "./modules/lostfound/lostfound.routes.js";
 import notificationsRoutes from "./modules/notifications/notifications.routes.js";
+import { HOSTELS, COMPLAINT_CATEGORIES } from "./constants/hostels.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { prisma } from "./config/db.js";
 import { auth } from "./middlewares/auth.js";
@@ -50,6 +51,13 @@ app.use("/api/polls", pollsRoutes);
 app.use("/api/lostfound", lostfoundRoutes);
 app.use("/api/notifications", notificationsRoutes);
 
+
+app.get("/api/hostels", (req, res) => {
+  res.json({
+    hostels: HOSTELS,
+    categories: COMPLAINT_CATEGORIES,
+  });
+});
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
