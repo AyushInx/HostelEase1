@@ -26,19 +26,22 @@ export default function LoginScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    const trimmedEmail = (email || "").trim().toLowerCase();
+    const trimmedPassword = password || "";
+
+    if (!trimmedEmail || !trimmedPassword) {
       return alert("Please fill in all fields");
     }
     
     try {
       setSubmitting(true);
-      const result = await login(email, password);
+      const result = await login(trimmedEmail, trimmedPassword);
       
       if (!result.success) {
-        alert(result.error || 'Login failed. Please try again.');
+        alert(result.error || 'Login failed. Please check your credentials and try again.');
       }
     } catch (error) {
-      alert(error.message || 'An unexpected error occurred. Please try again.');
+      alert(error.friendlyMessage || error.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setSubmitting(false);
     }

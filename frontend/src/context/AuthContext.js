@@ -11,7 +11,8 @@ export default function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const res = await loginApi({ email, password });
+      const cleanEmail = (email || "").trim().toLowerCase();
+      const res = await loginApi({ email: cleanEmail, password });
 
       if (!res || !res.data) {
         throw new Error('Invalid response from server');
@@ -61,7 +62,11 @@ export default function AuthProvider({ children }) {
 
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
+      const errorMessage =
+        error.response?.data?.message ||
+        error.friendlyMessage ||
+        error.message ||
+        'Login failed';
       Alert.alert("Login Failed", errorMessage);
       return { success: false, error: errorMessage };
     }

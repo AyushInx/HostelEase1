@@ -12,10 +12,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { register as registerApi, getMe } from "../../api/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { register as registerApi } from "../../api/auth";
 import { AuthContext } from "../../context/AuthContext";
-import { setUser } from "../../context/AuthContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
@@ -32,58 +30,51 @@ export default function RegisterScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword) {
+    const trimmedName = (name || "").trim();
+    const trimmedEmail = (email || "").trim().toLowerCase();
+    const trimmedPassword = password || "";
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword || !confirmPassword) {
       return alert("Please fill in all fields");
     }
-    if (password !== confirmPassword) {
+    if (trimmedPassword !== confirmPassword) {
       return alert("Passwords don't match");
+    }
+    if (trimmedPassword.length < 6) {
+      return alert("Password must be at least 6 characters");
     }
     
     try {
       setSubmitting(true);
-      
 
-      const response = await registerApi({ name, email, password });
-      
+      const response = await registerApi({
+        name: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
 
       if (!response || !response.data) {
         throw new Error('Invalid response from server');
       }
-      
-      
-      let token;
-      if (response.data.token) {
-        token = response.data.token;
-      } else if (response.data.data && response.data.data.token) {
-        token = response.data.data.token;
-      }
-      
-      if (token) {
-        await AsyncStorage.setItem("token", token);
-        
-        
-        const me = await getMe();
-        
-        
-        let userData = me?.data?.data || me?.data;
-        if (userData) {
-          setUser(userData);
-          alert('Registration successful! You are now logged in.');
-          return { success: true };
-        }
-      }
 
-      const loginResult = await login(email, password);
+      // Automatically log the user in using AuthContext
+      const loginResult = await login(trimmedEmail, trimmedPassword);
       if (!loginResult.success) {
-        throw new Error(loginResult.error || 'Registration successful but failed to log in. Please try logging in manually.');
+        alert("Registration successful! Please log in with your credentials.");
+        navigation.navigate("Login");
+        return { success: true };
       }
       
-      alert('Registration successful! You are now logged in.');
+      alert('Registration successful! Welcome to HostelEase.');
       return { success: true };
       
     } catch (error) {
       console.error('Registration error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.';
+      const errorMessage =
+        error.response?.data?.message ||
+        error.friendlyMessage ||
+        error.message ||
+        'Registration failed. Please try again.';
       alert(`Registration failed: ${errorMessage}`);
       return { success: false, error: errorMessage };
     } finally {
