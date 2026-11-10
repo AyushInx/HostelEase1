@@ -16,9 +16,7 @@ router.post("/menu", auth, role("WARDEN", "ADMIN"), createMenu);
 router.put("/menu/:id", auth, role("WARDEN", "ADMIN"), updateMenu);
 router.delete("/menu/:id", auth, role("WARDEN", "ADMIN"), deleteMenu);
 router.get("/menu", auth, listMenus);
-
-router.post("/feedback", auth, role("STUDENT"), createFeedback);  
-
+router.post("/feedback", auth, createFeedback);
 router.get("/analytics", auth, role("WARDEN", "ADMIN"), analytics);
 
 export default router;

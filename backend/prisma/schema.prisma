@@ -110,24 +110,35 @@ model Complaint {
 
 model MessMenu {
   id        Int      @id @default(autoincrement())
-  day       String   // "Monday", etc.
+  hostel    String   @default("CVR")
+  block     String?
+  day       String   // "Monday", "Tuesday", etc.
   breakfast String
   lunch     String
   dinner    String
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   feedbacks MessFeedback[]
+
+  @@index([hostel, day])
 }
 
 model MessFeedback {
   id        Int      @id @default(autoincrement())
   userId    Int
   menuId    Int
-  rating    Int      // 1 or -1
+  mealType  String   // "BREAKFAST", "LUNCH", "DINNER"
+  rating    Int      // 1 to 5 stars
+  comment   String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   user      User     @relation(fields: [userId], references: [id])
-  menu      MessMenu @relation(fields: [menuId], references: [id])
+  menu      MessMenu @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, menuId, mealType])
+  @@index([menuId, mealType])
 }
 
 // ====================================
