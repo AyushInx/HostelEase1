@@ -153,6 +153,7 @@ model Poll {
   id        Int       @id @default(autoincrement())
   question  String
   options   Json      // ["Option A","Option B"]
+  pollType  String    @default("SINGLE") // "SINGLE" or "MULTIPLE"
   createdBy Int
   createdAt DateTime  @default(now())
 
