@@ -7,6 +7,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
@@ -100,7 +101,14 @@ export default function ComplaintsListScreen() {
 
         {/* Title & Description */}
         <Text style={styles.complaintTitle}>{item.title}</Text>
-        <Text style={styles.description}>{item.description}</Text>
+        {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
+
+        {/* Attached Photo */}
+        {item.imageUrl ? (
+          <View style={styles.imageCardWrap}>
+            <Image source={{ uri: item.imageUrl }} style={styles.cardImage} resizeMode="cover" />
+          </View>
+        ) : null}
 
         {/* Location Tag */}
         <View style={styles.locationTag}>
@@ -218,6 +226,19 @@ const styles = StyleSheet.create({
     color: "#4b5563",
     lineHeight: 18,
     marginBottom: 10,
+  },
+  imageCardWrap: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 10,
+    backgroundColor: "#f3f4f6",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  cardImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: 12,
   },
   locationTag: {
     flexDirection: "row",

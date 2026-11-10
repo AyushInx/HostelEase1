@@ -9,8 +9,10 @@ import {
   ActivityIndicator,
   Platform,
   ScrollView,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import API from "../../api/api";
 import { AuthContext } from "../../context/AuthContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -28,7 +30,9 @@ export default function ApplyComplaintScreen({ navigation }) {
   const [hostel, setHostel] = useState("");
   const [block, setBlock] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pickingImage, setPickingImage] = useState(false);
 
   // Auto-fill location from user profile on mount
   useEffect(() => {
@@ -57,9 +61,44 @@ export default function ApplyComplaintScreen({ navigation }) {
     setRoomNumber(digitsOnly);
   };
 
+  const pickImage = async () => {
+    try {
+      setPickingImage(true);
+      if (Platform.OS !== "web") {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission Required",
+            "Camera roll / photo library permission is needed to attach an image."
+          );
+          return;
+        }
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.6,
+        base64: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        const dataUri = asset.base64
+          ? `data:image/jpeg;base64,${asset.base64}`
+          : asset.uri;
+        setImage(dataUri);
+      }
+    } catch (err) {
+      Alert.alert("Image Error", "Could not select the photo. Please try again.");
+    } finally {
+      setPickingImage(false);
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!description.trim()) {
-      return Alert.alert("Error", "Please provide a description of the issue");
+    if (!title.trim()) {
+      return Alert.alert("Required", "Please provide a title for your complaint");
     }
 
     if (!hostel) {
@@ -72,15 +111,14 @@ export default function ApplyComplaintScreen({ navigation }) {
 
     try {
       setLoading(true);
-      const cleanTitle = title.trim() || `${category} issue`;
-
       await API.post("/complaints", {
-        title: cleanTitle,
-        description: description.trim(),
+        title: title.trim(),
+        description: description.trim() || "",
         category,
         hostel,
         block: currentHostelConfig?.hasBlocks ? block : null,
         roomNumber: roomNumber.trim() || null,
+        imageUrl: image || null,
       });
 
       Alert.alert("Success", "Complaint submitted successfully", [
@@ -89,6 +127,7 @@ export default function ApplyComplaintScreen({ navigation }) {
           onPress: () => {
             setTitle("");
             setDescription("");
+            setImage(null);
             navigation.navigate("History");
           },
         },
@@ -211,27 +250,27 @@ export default function ApplyComplaintScreen({ navigation }) {
           </View>
         </View>
 
-        {/* 3. Title (optional, defaults to "<category> issue") */}
+        {/* 3. Title (Mandatory) */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Title (optional)</Text>
+          <Text style={styles.label}>Title *</Text>
           <View style={styles.inputWrapper}>
             <Ionicons name="alert-circle-outline" size={20} color="#666" style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder={`e.g. ${category} issue`}
+              placeholder={`e.g. Fan not working in room ${roomNumber || "204"}`}
               value={title}
               onChangeText={setTitle}
             />
           </View>
         </View>
 
-        {/* 4. Description (multiline) */}
+        {/* 4. Description (Optional) */}
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Description *</Text>
+          <Text style={styles.label}>Description (optional)</Text>
           <View style={[styles.inputWrapper, styles.textAreaWrapper]}>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Provide exact details of the issue..."
+              placeholder="Provide exact details or notes if needed (optional)..."
               value={description}
               onChangeText={setDescription}
               multiline
@@ -239,6 +278,42 @@ export default function ApplyComplaintScreen({ navigation }) {
               textAlignVertical="top"
             />
           </View>
+        </View>
+
+        {/* 5. Image Attachment (Optional) */}
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Attach Image (optional)</Text>
+          {image ? (
+            <View style={styles.imagePreviewWrap}>
+              <Image source={{ uri: image }} style={styles.imagePreview} resizeMode="cover" />
+              <TouchableOpacity
+                style={styles.removeImageBtn}
+                onPress={() => setImage(null)}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="close-circle" size={24} color="#ef4444" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.uploadBox}
+              onPress={pickImage}
+              disabled={pickingImage}
+              activeOpacity={0.7}
+            >
+              {pickingImage ? (
+                <ActivityIndicator size="small" color="#6b9eff" />
+              ) : (
+                <>
+                  <Ionicons name="camera-outline" size={28} color="#6b9eff" />
+                  <Text style={styles.uploadBoxTitle}>Upload photo of the issue</Text>
+                  <Text style={styles.uploadBoxSubtitle}>
+                    Tap to select from device photo library (optional)
+                  </Text>
+                </>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Submit */}
@@ -413,6 +488,55 @@ const styles = StyleSheet.create({
   textArea: {
     minHeight: 80,
     paddingVertical: 0,
+  },
+  uploadBox: {
+    borderWidth: 1.5,
+    borderColor: "#bfdbfe",
+    borderStyle: "dashed",
+    borderRadius: 14,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#eff6ff",
+  },
+  uploadBoxTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1e3a8a",
+    marginTop: 6,
+  },
+  uploadBoxSubtitle: {
+    fontSize: 11,
+    color: "#6b7280",
+    marginTop: 2,
+    textAlign: "center",
+  },
+  imagePreviewWrap: {
+    position: "relative",
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    backgroundColor: "#f9fafb",
+  },
+  imagePreview: {
+    width: "100%",
+    height: 180,
+    borderRadius: 14,
+  },
+  removeImageBtn: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "#ffffff",
+    borderRadius: 14,
+    padding: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   submitBtn: {
     backgroundColor: "#111",

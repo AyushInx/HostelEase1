@@ -84,14 +84,15 @@ model Leave {
 
 
 // ====================================
-// COMPLAINT MODULE (NO PHOTOS)
+// COMPLAINT MODULE
 // ====================================
 
 model Complaint {
   id          Int             @id @default(autoincrement())
   userId      Int
   title       String
-  description String
+  description String?
+  imageUrl    String?
   category    String          @default("OTHER")
   hostel      String?
   block       String?

@@ -3,22 +3,23 @@ import * as ComplaintsService from "./complaints.service.js";
 export const createComplaint = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const { title, description, category, hostel, block, roomNumber } = req.body || {};
+    const { title, description, category, hostel, block, roomNumber, imageUrl } = req.body || {};
 
-    if (!description || !description.trim()) {
-      const e = new Error("Description is required");
+    if (!title || !title.trim()) {
+      const e = new Error("Title is required");
       e.status = 400;
       throw e;
     }
 
     const created = await ComplaintsService.createComplaint({
       userId,
-      title,
-      description,
+      title: title.trim(),
+      description: description ? description.trim() : "",
       category,
       hostel,
       block,
       roomNumber,
+      imageUrl: imageUrl || null,
     });
     res.json(created);
   } catch (error) {

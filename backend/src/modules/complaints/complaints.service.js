@@ -13,9 +13,10 @@ export const createComplaint = async ({
   hostel,
   block,
   roomNumber,
+  imageUrl,
 }) => {
-  if (!description || !description.trim()) {
-    const e = new Error("Description is required");
+  if (!title || !title.trim()) {
+    const e = new Error("Title is required");
     e.status = 400;
     throw e;
   }
@@ -36,9 +37,8 @@ export const createComplaint = async ({
     matchedCategory = found;
   }
 
-  // Default title to "<category> issue" if not given
-  const cleanTitle =
-    title && title.trim() ? title.trim() : `${matchedCategory} issue`;
+  const cleanTitle = title.trim();
+  const cleanDescription = description && description.trim() ? description.trim() : "";
 
   // Fetch user profile for fallback location if not explicitly provided
   const user = await prisma.user.findUnique({
@@ -78,7 +78,8 @@ export const createComplaint = async ({
     data: {
       userId: Number(userId),
       title: cleanTitle,
-      description: description.trim(),
+      description: cleanDescription,
+      imageUrl: imageUrl || null,
       category: matchedCategory,
       hostel: validatedHostel,
       block: validatedBlock,
@@ -89,6 +90,7 @@ export const createComplaint = async ({
       id: true,
       title: true,
       description: true,
+      imageUrl: true,
       category: true,
       hostel: true,
       block: true,
@@ -125,6 +127,7 @@ export const listMyComplaints = async ({
         id: true,
         title: true,
         description: true,
+        imageUrl: true,
         category: true,
         hostel: true,
         block: true,
@@ -163,6 +166,7 @@ export const listComplaints = async ({
         id: true,
         title: true,
         description: true,
+        imageUrl: true,
         category: true,
         hostel: true,
         block: true,
@@ -203,6 +207,7 @@ export const updateComplaint = async ({ id, status }) => {
       id: true,
       title: true,
       description: true,
+      imageUrl: true,
       category: true,
       hostel: true,
       block: true,
@@ -224,6 +229,7 @@ export const getComplaintById = async ({ id }) => {
       id: true,
       title: true,
       description: true,
+      imageUrl: true,
       category: true,
       hostel: true,
       block: true,

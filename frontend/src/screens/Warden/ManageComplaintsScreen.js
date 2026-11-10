@@ -8,6 +8,7 @@ import {
   TextInput,
   Modal,
   Alert,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -236,8 +237,15 @@ export default function ManageComplaintsScreen({ navigation }) {
                   </View>
                 </View>
 
-                {/* Description */}
-                <Text style={styles.desc}>{c.description}</Text>
+                {/* Description (optional) */}
+                {c.description ? <Text style={styles.desc}>{c.description}</Text> : null}
+
+                {/* Attached Image (optional) */}
+                {c.imageUrl ? (
+                  <View style={styles.imageCardWrap}>
+                    <Image source={{ uri: c.imageUrl }} style={styles.cardImage} resizeMode="cover" />
+                  </View>
+                ) : null}
 
                 {/* Meta: Location & Student */}
                 <View style={styles.metaRow}>
@@ -575,6 +583,19 @@ const styles = StyleSheet.create({
     color: "#4b5563",
     lineHeight: 18,
     marginBottom: 10,
+  },
+  imageCardWrap: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 10,
+    backgroundColor: "#f3f4f6",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  cardImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: 12,
   },
   metaRow: {
     flexDirection: "row",
