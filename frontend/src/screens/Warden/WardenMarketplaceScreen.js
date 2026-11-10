@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Image,
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
+import { confirmAction } from "../../utils/confirmDialog";
 
 export default function WardenMarketplaceScreen({ navigation }) {
   const [items, setItems] = useState([]);
@@ -43,10 +44,12 @@ export default function WardenMarketplaceScreen({ navigation }) {
   useEffect(() => { load(); }, [statusFilter]);
 
   const confirmDelete = (id) => {
-    Alert.alert("Delete listing", "Are you sure you want to delete this item?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => onDelete(id) },
-    ]);
+    confirmAction({
+      title: "Delete Listing",
+      message: "Are you sure you want to permanently remove this marketplace item?",
+      confirmText: "Delete",
+      onConfirm: () => onDelete(id),
+    });
   };
 
   const onDelete = async (id) => {

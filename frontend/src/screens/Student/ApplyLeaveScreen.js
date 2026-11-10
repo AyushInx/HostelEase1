@@ -11,25 +11,58 @@ export default function ApplyLeaveScreen({ navigation }) {
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const handleDateInput = (text, setter) => {
+    const digits = text.replace(/[^0-9]/g, "").slice(0, 8);
+    let formatted = digits;
+    if (digits.length > 2 && digits.length <= 4) {
+      formatted = `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    } else if (digits.length > 4) {
+      formatted = `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4)}`;
+    }
+    setter(formatted);
+  };
+
   const handleSubmit = async () => {
-    if (!fromDate || !toDate || !reason) {
-      Alert.alert("Error", "Please fill all fields");
+    if (!fromDate || !toDate || !reason.trim()) {
+      Alert.alert("Missing Details", "Please fill in all fields");
       return;
     }
 
-    // Basic date validation (YYYY-MM-DD)
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(fromDate) || !dateRegex.test(toDate)) {
-      Alert.alert("Error", "Please use YYYY-MM-DD format for dates");
+    const dmyRegex = /^(\d{2})-(\d{2})-(\d{4})$/;
+    const mFrom = fromDate.match(dmyRegex);
+    const mTo = toDate.match(dmyRegex);
+
+    if (!mFrom || !mTo) {
+      Alert.alert("Invalid Date", "Please use DD-MM-YYYY format (e.g. 15-11-2026)");
+      return;
+    }
+
+    const [fDay, fMonth, fYear] = fromDate.split("-").map(Number);
+    const [tDay, tMonth, tYear] = toDate.split("-").map(Number);
+
+    if (fMonth < 1 || fMonth > 12 || fDay < 1 || fDay > 31) {
+      Alert.alert("Invalid Date", "From Date is not a valid calendar day/month");
+      return;
+    }
+    if (tMonth < 1 || tMonth > 12 || tDay < 1 || tDay > 31) {
+      Alert.alert("Invalid Date", "To Date is not a valid calendar day/month");
+      return;
+    }
+
+    const startUtc = new Date(Date.UTC(fYear, fMonth - 1, fDay));
+    const endUtc = new Date(Date.UTC(tYear, tMonth - 1, tDay, 23, 59, 59));
+
+    if (endUtc < startUtc) {
+      Alert.alert("Invalid Range", "To Date cannot be before From Date");
       return;
     }
 
     try {
       setLoading(true);
       await API.post("/leave/apply", {
-        fromDate: new Date(fromDate).toISOString(),
-        toDate: new Date(toDate).toISOString(),
-        reason
+        fromDate: startUtc.toISOString(),
+        toDate: endUtc.toISOString(),
+        reason: reason.trim()
       });
       Alert.alert("Success", "Leave application submitted successfully", [
         { text: "OK", onPress: () => {
@@ -63,28 +96,32 @@ export default function ApplyLeaveScreen({ navigation }) {
         <Text style={styles.subtitle}>Fill in the details below to request a leave pass.</Text>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>From Date (YYYY-MM-DD)</Text>
+          <Text style={styles.label}>From Date (DD-MM-YYYY) *</Text>
           <View style={styles.inputWrapper}>
             <Ionicons name="calendar-outline" size={20} color="#666" style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="2025-12-01"
+              placeholder="DD-MM-YYYY"
+              placeholderTextColor="#aaa"
               value={fromDate}
-              onChangeText={setFromDate}
+              onChangeText={(t) => handleDateInput(t, setFromDate)}
+              keyboardType="number-pad"
               maxLength={10}
             />
           </View>
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>To Date (YYYY-MM-DD)</Text>
+          <Text style={styles.label}>To Date (DD-MM-YYYY) *</Text>
           <View style={styles.inputWrapper}>
             <Ionicons name="calendar-outline" size={20} color="#666" style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="2025-12-05"
+              placeholder="DD-MM-YYYY"
+              placeholderTextColor="#aaa"
               value={toDate}
-              onChangeText={setToDate}
+              onChangeText={(t) => handleDateInput(t, setToDate)}
+              keyboardType="number-pad"
               maxLength={10}
             />
           </View>

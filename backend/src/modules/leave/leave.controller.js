@@ -1,5 +1,18 @@
 import * as LeaveService from "./leave.service.js";
 
+const parseLeaveDate = (d) => {
+  if (!d) return null;
+  if (typeof d === "string") {
+    // Support DD-MM-YYYY format
+    const dmyMatch = d.trim().match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+    if (dmyMatch) {
+      const [, day, month, year] = dmyMatch;
+      return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    }
+  }
+  return new Date(d);
+};
+
 export const applyLeave = async (req, res) => {
   const userId = req.user.id;
   const { fromDate, toDate, reason } = req.body || {};
@@ -10,10 +23,10 @@ export const applyLeave = async (req, res) => {
     throw e;
   }
 
-  const from = new Date(fromDate);
-  const to = new Date(toDate);
-  if (isNaN(from.getTime()) || isNaN(to.getTime())) {
-    const e = new Error("Invalid date format");
+  const from = parseLeaveDate(fromDate);
+  const to = parseLeaveDate(toDate);
+  if (!from || isNaN(from.getTime()) || !to || isNaN(to.getTime())) {
+    const e = new Error("Invalid date format. Please use DD-MM-YYYY");
     e.status = 400;
     throw e;
   }

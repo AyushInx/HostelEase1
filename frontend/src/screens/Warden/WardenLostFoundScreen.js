@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert,
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
+import { confirmAction } from "../../utils/confirmDialog";
 
 export default function WardenLostFoundScreen({ navigation }) {
   const [items, setItems] = useState([]);
@@ -43,10 +44,12 @@ export default function WardenLostFoundScreen({ navigation }) {
   useEffect(() => { load(); }, [typeFilter]);
 
   const confirmDelete = (id) => {
-    Alert.alert("Delete record", "Student owner and wardens can delete. Continue?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => onDelete(id) },
-    ]);
+    confirmAction({
+      title: "Delete Record",
+      message: "Are you sure you want to permanently delete this lost & found report?",
+      confirmText: "Delete",
+      onConfirm: () => onDelete(id),
+    });
   };
 
   const onDelete = async (id) => {

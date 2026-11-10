@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Ale
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
 import { useFocusEffect } from "@react-navigation/native";
+import { confirmAction, formatDMY } from "../../utils/confirmDialog";
 
 export default function LeavesListScreen() {
   const [leaves, setLeaves] = useState([]);
@@ -34,29 +35,23 @@ export default function LeavesListScreen() {
     }
   };
 
-  const handleDelete = async (id) => {
-    Alert.alert(
-      "Delete Leave",
-      "Are you sure you want to delete this leave application?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setLoading(true);
-              await API.delete(`/leave/${id}`);
-              loadLeaves(); // Refresh list
-            } catch (e) {
-              Alert.alert("Error", "Failed to delete leave");
-            } finally {
-              setLoading(false);
-            }
-          }
+  const handleDelete = (id) => {
+    confirmAction({
+      title: "Delete Leave Application",
+      message: "Are you sure you want to cancel and delete this leave application?",
+      confirmText: "Delete",
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          await API.delete(`/leave/${id}`);
+          loadLeaves();
+        } catch (e) {
+          Alert.alert("Error", e?.response?.data?.message || "Failed to delete leave");
+        } finally {
+          setLoading(false);
         }
-      ]
-    );
+      },
+    });
   };
 
   const renderItem = ({ item }) => (
@@ -66,7 +61,7 @@ export default function LeavesListScreen() {
           <Text style={styles.badgeText}>{item.status}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Text style={styles.date}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+          <Text style={styles.date}>{formatDMY(item.createdAt)}</Text>
           <TouchableOpacity onPress={() => handleDelete(item.id)}>
             <Ionicons name="trash-outline" size={20} color="#D32F2F" />
           </TouchableOpacity>
@@ -76,12 +71,12 @@ export default function LeavesListScreen() {
       <View style={styles.row}>
         <View style={styles.dateBox}>
           <Text style={styles.label}>From</Text>
-          <Text style={styles.dateValue}>{new Date(item.fromDate).toLocaleDateString()}</Text>
+          <Text style={styles.dateValue}>{formatDMY(item.fromDate)}</Text>
         </View>
         <Ionicons name="arrow-forward" size={20} color="#999" />
         <View style={styles.dateBox}>
           <Text style={styles.label}>To</Text>
-          <Text style={styles.dateValue}>{new Date(item.toDate).toLocaleDateString()}</Text>
+          <Text style={styles.dateValue}>{formatDMY(item.toDate)}</Text>
         </View>
       </View>
 

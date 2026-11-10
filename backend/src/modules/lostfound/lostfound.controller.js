@@ -32,7 +32,7 @@ export const resolve = async (req, res) => {
     e.status = 404;
     throw e;
   }
-  if (requester.role !== "WARDEN" && item.userId !== requester.id) {
+  if (requester.role !== "WARDEN" && requester.role !== "ADMIN" && item.userId !== requester.id) {
     const e = new Error("Forbidden");
     e.status = 403;
     throw e;
@@ -61,7 +61,7 @@ export const remove = async (req, res) => {
     e.status = 404;
     throw e;
   }
-  if (item.userId !== requester.id && requester.role !== "WARDEN") {
+  if (item.userId !== requester.id && requester.role !== "WARDEN" && requester.role !== "ADMIN") {
     const e = new Error("Forbidden");
     e.status = 403;
     throw e;

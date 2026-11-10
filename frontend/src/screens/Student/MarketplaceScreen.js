@@ -18,6 +18,7 @@ import { AuthContext } from "../../context/AuthContext";
 import API from "../../api/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { confirmAction } from "../../utils/confirmDialog";
 
 const MarketplaceScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -88,22 +89,20 @@ const MarketplaceScreen = ({ navigation }) => {
     }
   };
 
-  const handleDelete = async (id) => {
-    Alert.alert("Confirm Delete", "Are you sure you want to remove this item?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await API.delete(`/marketplace/item/${id}`);
-            setItems(prev => prev.filter(i => i.id !== id));
-          } catch (err) {
-            Alert.alert("Error", "Failed to delete item.");
-          }
+  const handleDelete = (id) => {
+    confirmAction({
+      title: "Remove Item",
+      message: "Are you sure you want to remove this marketplace listing?",
+      confirmText: "Delete",
+      onConfirm: async () => {
+        try {
+          await API.delete(`/marketplace/item/${id}`);
+          setItems(prev => prev.filter(i => i.id !== id));
+        } catch (err) {
+          Alert.alert("Error", err?.response?.data?.message || "Failed to delete item.");
         }
-      }
-    ]);
+      },
+    });
   };
 
   const handleMarkSold = async (id) => {

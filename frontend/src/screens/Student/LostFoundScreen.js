@@ -18,6 +18,7 @@ import { AuthContext } from "../../context/AuthContext";
 import API from "../../api/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { confirmAction } from "../../utils/confirmDialog";
 
 const LostFoundScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -102,40 +103,38 @@ const LostFoundScreen = ({ navigation }) => {
 
   // ... (handleResolve, handleDelete remain same)
 
-  const handleResolve = async (id) => {
-    Alert.alert("Confirm Resolve", "Mark this item as resolved (Found/Returned)?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Yes, Resolve",
-        onPress: async () => {
-          try {
-            await API.put(`/lostfound/${id}/resolve`);
-            // Optimistic update
-            setItems(prev => prev.map(i => i.id === id ? { ...i, resolved: true } : i));
-          } catch (err) {
-            Alert.alert("Error", "Failed to resolve item.");
-          }
+  const handleResolve = (id) => {
+    confirmAction({
+      title: "Confirm Resolve",
+      message: "Mark this item as resolved (Found/Returned)?",
+      confirmText: "Resolve",
+      isDestructive: false,
+      onConfirm: async () => {
+        try {
+          await API.put(`/lostfound/${id}/resolve`);
+          // Optimistic update
+          setItems(prev => prev.map(i => i.id === id ? { ...i, resolved: true } : i));
+        } catch (err) {
+          Alert.alert("Error", err?.response?.data?.message || "Failed to resolve item.");
         }
-      }
-    ]);
+      },
+    });
   };
 
-  const handleDelete = async (id) => {
-    Alert.alert("Confirm Delete", "Are you sure you want to delete this report?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            await API.delete(`/lostfound/${id}`);
-            setItems(prev => prev.filter(i => i.id !== id));
-          } catch (err) {
-            Alert.alert("Error", "Failed to delete item.");
-          }
+  const handleDelete = (id) => {
+    confirmAction({
+      title: "Delete Report",
+      message: "Are you sure you want to permanently delete this report?",
+      confirmText: "Delete",
+      onConfirm: async () => {
+        try {
+          await API.delete(`/lostfound/${id}`);
+          setItems(prev => prev.filter(i => i.id !== id));
+        } catch (err) {
+          Alert.alert("Error", err?.response?.data?.message || "Failed to delete item.");
         }
-      }
-    ]);
+      },
+    });
   };
 
   const openModal = () => {
@@ -145,7 +144,8 @@ const LostFoundScreen = ({ navigation }) => {
   };
 
   const renderItem = ({ item }) => {
-    const isMine = item.userId === user.id;
+    const isMine = item.userId === user?.id || String(item.userId) === String(user?.id);
+    const canDelete = isMine || user?.role === "ADMIN" || user?.role === "WARDEN";
     const isResolved = item.resolved;
     
     // Theme colors based on type
@@ -181,9 +181,9 @@ const LostFoundScreen = ({ navigation }) => {
             </Text>
           </View>
           
-          {isMine && (
+          {(canDelete || isMine) && (
             <View style={styles.actionRow}>
-              {!isResolved && (
+              {isMine && !isResolved && (
                 <TouchableOpacity 
                   style={[styles.actionBtn, styles.resolveBtn]} 
                   onPress={() => handleResolve(item.id)}
@@ -193,12 +193,14 @@ const LostFoundScreen = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity 
-                style={[styles.actionBtn, styles.deleteBtn]} 
-                onPress={() => handleDelete(item.id)}
-              >
-                <Ionicons name="trash-outline" size={16} color="#fff" />
-              </TouchableOpacity>
+              {canDelete && (
+                <TouchableOpacity 
+                  style={[styles.actionBtn, styles.deleteBtn]} 
+                  onPress={() => handleDelete(item.id)}
+                >
+                  <Ionicons name="trash-outline" size={16} color="#fff" />
+                </TouchableOpacity>
+              )}
             </View>
           )}
         </View>

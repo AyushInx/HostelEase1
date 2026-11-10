@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, FlatList, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
+import { confirmAction } from "../../utils/confirmDialog";
 
 export default function PollsManageScreen({ navigation }) {
   const [polls, setPolls] = useState([]);
@@ -42,16 +43,23 @@ export default function PollsManageScreen({ navigation }) {
 
   const toggleExpand = (id) => setExpandedId((cur) => (cur === id ? null : id));
 
-  const remove = async (id) => {
-    try {
-      setLoading(true);
-      await API.delete(`/polls/${id}`);
-      await load();
-    } catch (e) {
-      alert(e?.response?.data?.message || "Failed to delete poll");
-    } finally {
-      setLoading(false);
-    }
+  const remove = (id) => {
+    confirmAction({
+      title: "Delete Poll",
+      message: "Are you sure you want to permanently delete this poll and all its votes?",
+      confirmText: "Delete",
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          await API.delete(`/polls/${id}`);
+          await load();
+        } catch (e) {
+          Alert.alert("Error", e?.response?.data?.message || "Failed to delete poll");
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   const viewResults = async (id) => {

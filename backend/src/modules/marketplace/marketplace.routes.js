@@ -21,6 +21,6 @@ router.put("/item/:id", auth, role("STUDENT"), updateItem);
 router.put("/item/:id/mark-sold", auth, role("STUDENT"), markSold);
 
 
-router.delete("/item/:id", auth, role("STUDENT","WARDEN"), deleteItem);
+router.delete("/item/:id", auth, role("STUDENT", "WARDEN", "ADMIN"), deleteItem);
 
 export default router;

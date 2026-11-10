@@ -16,6 +16,7 @@ import {
   COMPLAINT_STATUS_LABELS,
   COMPLAINT_STATUS_COLORS,
 } from "../../constants/hostels";
+import { confirmAction } from "../../utils/confirmDialog";
 
 export default function ComplaintsListScreen() {
   const [complaints, setComplaints] = useState([]);
@@ -39,29 +40,23 @@ export default function ComplaintsListScreen() {
     }, [])
   );
 
-  const handleDelete = async (id) => {
-    Alert.alert(
-      "Delete Complaint",
-      "Are you sure you want to delete this complaint?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setLoading(true);
-              await API.delete(`/complaints/${id}`);
-              loadComplaints();
-            } catch (e) {
-              Alert.alert("Error", "Failed to delete complaint");
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
+  const handleDelete = (id) => {
+    confirmAction({
+      title: "Delete Complaint",
+      message: "Are you sure you want to permanently delete this complaint?",
+      confirmText: "Delete",
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          await API.delete(`/complaints/${id}`);
+          loadComplaints();
+        } catch (e) {
+          Alert.alert("Error", e?.response?.data?.message || "Failed to delete complaint");
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   const formatLocation = (item) => {

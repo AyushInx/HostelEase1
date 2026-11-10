@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import API from "../../api/api";
+import { confirmAction, formatDMY } from "../../utils/confirmDialog";
 
 export default function PendingLeavesScreen({ navigation }) {
   const [items, setItems] = useState([]);
@@ -37,28 +38,44 @@ export default function PendingLeavesScreen({ navigation }) {
 
   useEffect(() => { load(); }, []);
 
-  const approve = async (id) => {
-    try {
-      setLoading(true);
-      await API.put(`/leave/approve/${id}`);
-      await load();
-    } catch (e) {
-      alert(e?.response?.data?.message || "Failed to approve");
-    } finally {
-      setLoading(false);
-    }
+  const approve = (id) => {
+    confirmAction({
+      title: "Approve Leave",
+      message: "Are you sure you want to approve this student leave request?",
+      confirmText: "Approve",
+      isDestructive: false,
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          await API.put(`/leave/approve/${id}`);
+          await load();
+        } catch (e) {
+          Alert.alert("Error", e?.response?.data?.message || "Failed to approve leave");
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
-  const reject = async (id) => {
-    try {
-      setLoading(true);
-      await API.put(`/leave/reject/${id}`);
-      await load();
-    } catch (e) {
-      alert(e?.response?.data?.message || "Failed to reject");
-    } finally {
-      setLoading(false);
-    }
+  const reject = (id) => {
+    confirmAction({
+      title: "Reject Leave",
+      message: "Are you sure you want to reject this student leave request?",
+      confirmText: "Reject",
+      isDestructive: true,
+      onConfirm: async () => {
+        try {
+          setLoading(true);
+          await API.put(`/leave/reject/${id}`);
+          await load();
+        } catch (e) {
+          Alert.alert("Error", e?.response?.data?.message || "Failed to reject leave");
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
   };
 
   return (
@@ -96,7 +113,7 @@ export default function PendingLeavesScreen({ navigation }) {
                   <Text style={styles.badgeText}>{l.status || "PENDING"}</Text>
                 </View>
               </View>
-              <Text style={styles.meta}>{l.fromDate ? new Date(l.fromDate).toDateString() : ""} {l.toDate ? `- ${new Date(l.toDate).toDateString()}` : ""}</Text>
+              <Text style={styles.meta}>{l.fromDate ? formatDMY(l.fromDate) : ""} {l.toDate ? `to ${formatDMY(l.toDate)}` : ""}</Text>
               {l.reason ? <Text style={styles.desc}>{l.reason}</Text> : null}
               {(l.status || "PENDING") === "PENDING" ? (
                 <View style={styles.actionsRow}>

@@ -5,7 +5,7 @@ import { report, list, resolve, getById, remove } from "./lostfound.controller.j
 
 const router = Router();
 
-router.post("/report", auth, role("STUDENT"), report);
+router.post("/report", auth, role("STUDENT", "WARDEN", "ADMIN"), report);
 
 router.get("/", auth, list);
 
@@ -13,6 +13,6 @@ router.put("/:id/resolve", auth, resolve);
 
 router.get("/:id", auth, getById);
 
-router.delete("/:id", auth, role("STUDENT", "WARDEN"), remove);
+router.delete("/:id", auth, role("STUDENT", "WARDEN", "ADMIN"), remove);
 
 export default router;
