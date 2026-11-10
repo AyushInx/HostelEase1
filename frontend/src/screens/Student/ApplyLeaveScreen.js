@@ -23,6 +23,8 @@ export default function ApplyLeaveScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
     if (!fromDate || !toDate || !reason.trim()) {
       Alert.alert("Missing Details", "Please fill in all fields");
       return;
@@ -64,14 +66,14 @@ export default function ApplyLeaveScreen({ navigation }) {
         toDate: endUtc.toISOString(),
         reason: reason.trim()
       });
-      Alert.alert("Success", "Leave application submitted successfully", [
-        { text: "OK", onPress: () => {
-            setFromDate("");
-            setToDate("");
-            setReason("");
-            navigation.navigate("History"); 
-        }}
-      ]);
+
+      // Reset form fields immediately
+      setFromDate("");
+      setToDate("");
+      setReason("");
+
+      Alert.alert("Success", "Leave application submitted successfully! 📋");
+      navigation.navigate("History");
     } catch (e) {
       const msg = e.response?.data?.message || "Failed to apply for leave";
       Alert.alert("Error", msg);

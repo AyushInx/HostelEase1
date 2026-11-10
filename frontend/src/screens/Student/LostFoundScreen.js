@@ -69,25 +69,26 @@ const LostFoundScreen = ({ navigation }) => {
   };
 
   const handleReport = async () => {
-    if (!title || !description || !location) {
+    if (submitting) return;
+
+    if (!title.trim() || !description.trim() || !location.trim()) {
       Alert.alert("Missing Fields", "Please fill in all fields.");
       return;
     }
     
     try {
       setSubmitting(true);
-      // If we are in MINE tab, default to LOST or let user choose? 
-      // The modal has a type selector, so reportType state handles it.
       await API.post("/lostfound/report", {
         type: reportType,
-        title,
-        description,
-        location
+        title: title.trim(),
+        description: description.trim(),
+        location: location.trim()
       });
-      setModalVisible(false);
+      // Clear form immediately
       setTitle("");
       setDescription("");
       setLocation("");
+      setModalVisible(false);
       
       // Refresh list
       fetchItems();

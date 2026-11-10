@@ -67,15 +67,17 @@ export default function MessMenuManageScreen({ navigation }) {
   };
 
   const submit = async () => {
-    if (!day.trim()) return alert("Day is required");
+    if (loading) return;
+    if (!day.trim()) return Alert.alert("Required", "Day is required");
     try {
       setLoading(true);
       await API.post("/mess/menu", { day: day.trim(), breakfast, lunch, dinner });
-      setOpen(false);
       setDay(""); setBreakfast(""); setLunch(""); setDinner("");
+      setOpen(false);
       await load();
+      Alert.alert("Success", "Mess menu saved successfully! 🍽️");
     } catch (e) {
-      alert(e?.response?.data?.message || "Failed to create menu");
+      Alert.alert("Error", e?.response?.data?.message || "Failed to create menu");
     } finally {
       setLoading(false);
     }
@@ -209,8 +211,12 @@ export default function MessMenuManageScreen({ navigation }) {
               <Text style={styles.label}>Dinner</Text>
               <TextInput placeholder="e.g. Roti, Paneer" value={dinner} onChangeText={setDinner} style={styles.input} placeholderTextColor="#999" />
               
-              <TouchableOpacity style={styles.saveBtn} onPress={submit}>
-                <Text style={styles.saveBtnText}>Save Menu</Text>
+              <TouchableOpacity 
+                style={[styles.saveBtn, loading && { opacity: 0.6 }]} 
+                onPress={submit}
+                disabled={loading}
+              >
+                <Text style={styles.saveBtnText}>{loading ? "Saving..." : "Save Menu"}</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>

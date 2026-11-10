@@ -63,7 +63,9 @@ const MarketplaceScreen = ({ navigation }) => {
   };
 
   const handleAddItem = async () => {
-    if (!newItemTitle || !newItemDesc || !newItemPrice) {
+    if (submitting) return;
+
+    if (!newItemTitle.trim() || !newItemDesc.trim() || !newItemPrice.trim()) {
       Alert.alert("Missing Fields", "Please fill in all fields.");
       return;
     }
@@ -71,14 +73,15 @@ const MarketplaceScreen = ({ navigation }) => {
     try {
       setSubmitting(true);
       await API.post("/marketplace/item", {
-        title: newItemTitle,
-        description: newItemDesc,
+        title: newItemTitle.trim(),
+        description: newItemDesc.trim(),
         price: parseFloat(newItemPrice)
       });
-      setModalVisible(false);
+      // Clear form immediately
       setNewItemTitle("");
       setNewItemDesc("");
       setNewItemPrice("");
+      setModalVisible(false);
       fetchItems(); // Refresh list
       Alert.alert("Success", "Item listed successfully! 🎉");
     } catch (err) {

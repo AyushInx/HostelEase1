@@ -52,6 +52,7 @@ export default function WardenProfileScreen() {
   };
 
   const saveName = async () => {
+    if (loading) return;
     if (!name.trim()) return Alert.alert("Validation", "Name cannot be empty");
     try {
       setLoading(true);
@@ -65,6 +66,7 @@ export default function WardenProfileScreen() {
   };
 
   const changePassword = async () => {
+    if (loading) return;
     if (!oldPassword || !newPassword || !confirmPassword) return Alert.alert("Validation", "Fill all password fields");
     if (newPassword !== confirmPassword) return Alert.alert("Validation", "New password and confirm password do not match");
     try {

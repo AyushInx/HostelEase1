@@ -56,6 +56,7 @@ export default function WardenNotificationsScreen({ navigation }) {
   };
 
   const send = async () => {
+    if (loading) return;
     if (!title.trim() || !message.trim()) return Alert.alert("Error", "Title and message are required");
     
     const recipients = {};
@@ -223,8 +224,12 @@ export default function WardenNotificationsScreen({ navigation }) {
                 textAlignVertical="top"
               />
 
-              <TouchableOpacity style={styles.sendBtn} onPress={send}>
-                <Text style={styles.sendBtnText}>Send Announcement</Text>
+              <TouchableOpacity 
+                style={[styles.sendBtn, loading && { opacity: 0.6 }]} 
+                onPress={send}
+                disabled={loading}
+              >
+                <Text style={styles.sendBtnText}>{loading ? "Sending..." : "Send Announcement"}</Text>
                 <Ionicons name="send" size={18} color="#fff" />
               </TouchableOpacity>
             </ScrollView>

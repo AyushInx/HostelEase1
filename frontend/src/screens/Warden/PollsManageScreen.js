@@ -114,6 +114,7 @@ export default function PollsManageScreen({ navigation }) {
   };
 
   const submit = async () => {
+    if (loading) return;
     const cleanOptions = options.map((o) => String(o || "").trim()).filter(Boolean);
     if (!question.trim()) {
       return Alert.alert("Input Required", "Please enter a poll question.");
@@ -129,10 +130,12 @@ export default function PollsManageScreen({ navigation }) {
         options: cleanOptions,
         pollType,
       });
-      setOpen(false);
+      // Clear form immediately
       setQuestion("");
       setPollType("SINGLE");
       setOptions(["", ""]);
+      setOpen(false);
+      Alert.alert("Success", "Poll published successfully! 📊");
       await load();
     } catch (e) {
       Alert.alert("Creation Error", e?.response?.data?.message || "Failed to create poll");
@@ -395,9 +398,13 @@ export default function PollsManageScreen({ navigation }) {
               >
                 <Text style={styles.modalBtnCancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalBtn, styles.modalBtnSubmit]} onPress={submit}>
+              <TouchableOpacity 
+                style={[styles.modalBtn, styles.modalBtnSubmit, loading && { opacity: 0.6 }]} 
+                onPress={submit}
+                disabled={loading}
+              >
                 <Ionicons name="checkmark" size={18} color="#fff" />
-                <Text style={styles.modalBtnSubmitText}>Publish Poll</Text>
+                <Text style={styles.modalBtnSubmitText}>{loading ? "Publishing..." : "Publish Poll"}</Text>
               </TouchableOpacity>
             </View>
           </View>

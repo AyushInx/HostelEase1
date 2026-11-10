@@ -98,6 +98,7 @@ export default function StudentProfileScreen() {
   };
 
   const saveProfile = async () => {
+    if (loading) return;
     if (!name.trim()) return Alert.alert("Validation", "Name cannot be empty");
 
     if (hostel) {
@@ -129,6 +130,7 @@ export default function StudentProfileScreen() {
   };
 
   const changePassword = async () => {
+    if (loading) return;
     if (!oldPassword || !newPassword || !confirmPassword)
       return Alert.alert("Validation", "Fill all password fields");
     if (newPassword !== confirmPassword)

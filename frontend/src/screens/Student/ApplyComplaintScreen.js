@@ -97,6 +97,8 @@ export default function ApplyComplaintScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+
     if (!title.trim()) {
       return Alert.alert("Required", "Please provide a title for your complaint");
     }
@@ -121,17 +123,13 @@ export default function ApplyComplaintScreen({ navigation }) {
         imageUrl: image || null,
       });
 
-      Alert.alert("Success", "Complaint submitted successfully", [
-        {
-          text: "OK",
-          onPress: () => {
-            setTitle("");
-            setDescription("");
-            setImage(null);
-            navigation.navigate("History");
-          },
-        },
-      ]);
+      // Clear form immediately
+      setTitle("");
+      setDescription("");
+      setImage(null);
+
+      Alert.alert("Success", "Complaint submitted successfully! 🛠️");
+      navigation.navigate("History");
     } catch (e) {
       const msg = e.response?.data?.message || e.friendlyMessage || "Failed to submit complaint";
       Alert.alert("Error", msg);
