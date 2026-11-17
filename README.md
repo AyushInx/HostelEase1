@@ -121,9 +121,10 @@ graph TD
 You can test the live application directly on **[https://hostelease1-web.vercel.app/](https://hostelease1-web.vercel.app/)** or via the Android APK using these pre-configured accounts:
 
 ### 👑 Admin / Warden Access
-- *
-- **Password**: `
-- **Privileges**: Manage complaints (Accept/Progress/Resolve), Approve leaves, Update mess menus, Create polls.
+- **Email**: `warden@iitp.ac.in`
+- **Password**: `warden@123`
+- **Role**: `ADMIN`
+- **Privileges**: Manage complaints (Accept/Progress/Resolve), Approve leaves, Update mess menus, View rating analytics & feedback, Create polls, Broadcast notices, User management.
 
 ### 🎓 Student Access
 - **Email**: Any student account or register a new account on the registration screen.
